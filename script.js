@@ -32,6 +32,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.body.style.overflow = "";
             });
         });
+
+        // Close menu when clicking on blank area (the overlay backdrop)
+        menuOverlay.addEventListener("click", (e) => {
+            if (e.target === menuOverlay) {
+                burgerBtn.classList.remove("open");
+                menuOverlay.classList.remove("open");
+                document.body.style.overflow = "";
+            }
+        });
     }
 
     // 3. Scroll Spy for Sidebar Dot Highlights
