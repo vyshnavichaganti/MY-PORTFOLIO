@@ -46,101 +46,205 @@ body {
     font-family: 'Outfit', sans-serif;
 }
 
-/* Scroll Snapping & Entry Animations Layout (Desktop) */
+/* ============================================================
+   UNIVERSAL FRAME TRANSITION — SAME FOR ALL SECTIONS
+   Exit:  Scale-up + blur explosion upward
+   Enter: Zoom in from oversized blur, collapse into crisp view
+   ============================================================ */
+
+@keyframes exitFrame {
+    0%   {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.18) translateY(-50px);
+        filter: blur(18px);
+    }
+}
+
+@keyframes enterFrame {
+    0%   {
+        opacity: 0;
+        transform: scale(1.22) translateY(40px);
+        filter: blur(20px);
+    }
+    60%  {
+        opacity: 0.7;
+        transform: scale(1.04) translateY(8px);
+        filter: blur(4px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0px);
+    }
+}
+
+/* ============================================================
+   DESKTOP SCROLL SNAPPING + ANIMATION SYSTEM
+   ============================================================ */
 @media (min-width: 1024px) {
     html, body {
         height: 100%;
-        overflow: hidden; /* Hide scrollbar for fullpage slide transitions */
+        overflow: hidden;
     }
-    
+
     .scroll-section {
         height: 100vh;
         overflow: hidden;
         position: relative;
         display: flex;
         align-items: center;
-        padding-top: 70px; /* Header space */
+        padding-top: 70px;
     }
-    
+
     .main-container {
         width: 100%;
         height: 100%;
         position: relative;
-        transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1);
     }
 
-    /* Staggered Section Element Transitions */
-    .hero-left, .split-left {
-        opacity: 0;
-        transform: translateX(-80px);
-        transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-    }
-    
+    /* ---- SHARED BASE STATES ---- */
+    .hero-left, .split-left { opacity: 1; }
+
     .hero-right, .split-right {
         opacity: 0;
-        transform: translateX(80px);
-        transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        transform: translateY(50px);
+        transition: opacity 0.9s ease 0.35s, transform 1s cubic-bezier(0.25, 1, 0.5, 1) 0.35s;
+    }
+    .scroll-section.active .hero-right,
+    .scroll-section.active .split-right {
+        opacity: 1;
+        transform: translateY(0);
     }
 
-    /* Staggered inner elements for split-left content */
+    /* Section tag base — hidden until active */
+    .hero-left .section-tag,
     .split-left .section-tag {
         opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.6s ease-out 0.2s, transform 0.6s ease-out 0.2s;
+        transform: scale(1.1) translateY(-20px);
+        filter: blur(8px);
+        display: block;
+        transition: opacity 0.7s ease 0.05s, transform 0.7s ease 0.05s, filter 0.7s ease 0.05s;
     }
-    
+
+    /* Title base */
+    .hero-left .hero-title,
     .split-left .section-title {
         opacity: 0;
-        transform: translateY(25px);
-        transition: opacity 0.6s ease-out 0.3s, transform 0.6s ease-out 0.3s;
+        transform: scale(1.15) translateY(25px);
+        filter: blur(14px);
+        transition: opacity 0.85s cubic-bezier(0.25, 1, 0.5, 1) 0.15s,
+                    transform 0.85s cubic-bezier(0.25, 1, 0.5, 1) 0.15s,
+                    filter 0.85s ease 0.15s;
     }
-    
+
+    /* Divider */
     .split-left .title-divider {
         opacity: 0;
         transform: scaleX(0);
         transform-origin: left;
-        transition: opacity 0.6s ease-out 0.4s, transform 0.6s ease-out 0.4s;
+        transition: opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s;
     }
-    
-    .split-left .section-desc, .split-left .about-desc, .split-left .about-highlight {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.6s ease-out 0.5s, transform 0.6s ease-out 0.5s;
-    }
-
-    .split-left .contact-email, .split-left .contact-socials {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.6s ease-out 0.6s, transform 0.6s ease-out 0.6s;
-    }
-
-    /* Active Animation States when .active is added to sections */
-    .scroll-section.active .hero-left, 
-    .scroll-section.active .split-left {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    
-    .scroll-section.active .hero-right, 
-    .scroll-section.active .split-right {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    
-    .scroll-section.active .split-left .section-tag,
-    .scroll-section.active .split-left .section-title,
-    .scroll-section.active .split-left .section-desc,
-    .scroll-section.active .split-left .about-desc,
-    .scroll-section.active .split-left .about-highlight,
-    .scroll-section.active .split-left .contact-email,
-    .scroll-section.active .split-left .contact-socials {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    
     .scroll-section.active .split-left .title-divider {
         opacity: 1;
         transform: scaleX(1);
+    }
+
+    /* Desc / body text */
+    .hero-left .hero-desc,
+    .split-left .section-desc,
+    .split-left .about-desc,
+    .split-left .about-highlight {
+        opacity: 0;
+        transform: scale(1.08) translateY(20px);
+        filter: blur(10px);
+        transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s, filter 0.8s ease 0.3s;
+    }
+
+    /* CTAs / socials / extra blocks */
+    .hero-left .hero-ctas,
+    .hero-left .metrics-grid,
+    .split-left .contact-email,
+    .split-left .contact-socials {
+        opacity: 0;
+        transform: scale(1.06) translateY(18px);
+        filter: blur(8px);
+        transition: opacity 0.8s ease 0.45s, transform 0.8s ease 0.45s, filter 0.8s ease 0.45s;
+    }
+
+    /* ---- ACTIVE STATES (section enters view — CSS transition resolves) ---- */
+    .scroll-section.active .hero-left .section-tag,
+    .scroll-section.active .split-left .section-tag {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+
+    .scroll-section.active .hero-left .hero-title,
+    .scroll-section.active .split-left .section-title {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+
+    .scroll-section.active .hero-left .hero-desc,
+    .scroll-section.active .split-left .section-desc,
+    .scroll-section.active .split-left .about-desc,
+    .scroll-section.active .split-left .about-highlight {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+
+    .scroll-section.active .hero-left .hero-ctas,
+    .scroll-section.active .hero-left .metrics-grid,
+    .scroll-section.active .split-left .contact-email,
+    .scroll-section.active .split-left .contact-socials {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+
+    /* ---- EXIT: scale-up + blur explosion upward (leaving section) ---- */
+    .scroll-section.tx-exit-0 .hero-left > *,
+    .scroll-section.tx-exit-1 .split-left > *,
+    .scroll-section.tx-exit-2 .split-left > *,
+    .scroll-section.tx-exit-3 .split-left > *,
+    .scroll-section.tx-exit-4 .split-left > *,
+    .scroll-section.tx-exit-5 .split-left > * {
+        animation: exitFrame 0.55s cubic-bezier(0.4, 0, 1, 1) forwards;
+    }
+
+    /* ---- ENTER: zoom-in from large blur, collapse to crisp (arriving section) ---- */
+    .scroll-section.tx-enter-0.active .hero-left .section-tag,
+    .scroll-section.tx-enter-0.active .hero-title,
+    .scroll-section.tx-enter-0.active .hero-desc,
+    .scroll-section.tx-enter-0.active .hero-ctas,
+    .scroll-section.tx-enter-0.active .metrics-grid,
+    .scroll-section.tx-enter-1.active .split-left .section-tag,
+    .scroll-section.tx-enter-1.active .section-title,
+    .scroll-section.tx-enter-1.active .about-desc,
+    .scroll-section.tx-enter-1.active .about-highlight,
+    .scroll-section.tx-enter-2.active .split-left .section-tag,
+    .scroll-section.tx-enter-2.active .section-title,
+    .scroll-section.tx-enter-2.active .section-desc,
+    .scroll-section.tx-enter-3.active .split-left .section-tag,
+    .scroll-section.tx-enter-3.active .section-title,
+    .scroll-section.tx-enter-3.active .section-desc,
+    .scroll-section.tx-enter-4.active .split-left .section-tag,
+    .scroll-section.tx-enter-4.active .section-title,
+    .scroll-section.tx-enter-4.active .section-desc,
+    .scroll-section.tx-enter-5.active .split-left .section-tag,
+    .scroll-section.tx-enter-5.active .section-title,
+    .scroll-section.tx-enter-5.active .section-desc,
+    .scroll-section.tx-enter-5.active .contact-email,
+    .scroll-section.tx-enter-5.active .contact-socials {
+        animation: enterFrame 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
 }
 

@@ -44,29 +44,64 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentSectionIndex = 0;
     let isAnimating = false;
 
+    // Transition style definitions: each index = from-section, value = unique class suffix
+    // Transitions are named: "tx-{from}-{to}" e.g. tx-0-1 = Home → About
+    const TRANSITION_CLASSES = [
+        'tx-exit-0', 'tx-exit-1', 'tx-exit-2', 'tx-exit-3', 'tx-exit-4', 'tx-exit-5'
+    ];
+    const ENTRY_CLASSES = [
+        'tx-enter-0', 'tx-enter-1', 'tx-enter-2', 'tx-enter-3', 'tx-enter-4', 'tx-enter-5'
+    ];
+
+    function clearTransitionClasses(section) {
+        TRANSITION_CLASSES.forEach(c => section.classList.remove(c));
+        ENTRY_CLASSES.forEach(c => section.classList.remove(c));
+    }
+
     function scrollToSection(index) {
         if (index < 0 || index >= sectionsArray.length) return;
         
         isAnimating = true;
+        const prevIndex = currentSectionIndex;
         currentSectionIndex = index;
         const activeSection = sectionsArray[index];
         const activeId = activeSection.getAttribute("id");
 
         if (window.innerWidth >= 1024) {
+            // Apply EXIT class to outgoing section
+            const leavingSection = sectionsArray[prevIndex];
+            if (leavingSection && prevIndex !== index) {
+                clearTransitionClasses(leavingSection);
+                leavingSection.classList.add(TRANSITION_CLASSES[prevIndex]);
+                leavingSection.classList.remove("active");
+            }
+
+            // Apply ENTER class + active to incoming section
+            clearTransitionClasses(activeSection);
+            activeSection.classList.add(ENTRY_CLASSES[index]);
+            activeSection.classList.add("active");
+
             // Translate the outer wrapper container vertically
             mainContainer.style.transform = `translateY(-${index * 100}vh)`;
-            
-            // Toggle active animation trigger states
+
+            // Clear exit classes from other non-active sections  
             sectionsArray.forEach((s, idx) => {
-                if (idx === index) {
-                    s.classList.add("active");
-                } else {
+                if (idx !== index && idx !== prevIndex) {
                     s.classList.remove("active");
+                    clearTransitionClasses(s);
                 }
             });
+
+            // Clean up exit class from leaving section after animation
+            setTimeout(() => {
+                if (leavingSection) clearTransitionClasses(leavingSection);
+            }, 900);
         } else {
             // Scroll smoothly on mobile devices
             activeSection.scrollIntoView({ behavior: 'smooth' });
+            sectionsArray.forEach((s, idx) => {
+                s.classList.toggle("active", idx === index);
+            });
         }
 
         // Update dot selection highlights
@@ -79,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
             isAnimating = false;
-        }, 850); // Matches stylesheet transform transition duration
+        }, 850);
     }
 
     // Wheel Event Listener to intercept native scroll
