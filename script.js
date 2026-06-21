@@ -43,7 +43,51 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // ─── Project Carousel ──────────────────────────────────────────
+    const projTrack   = document.getElementById("proj-track");
+    const projPrev    = document.getElementById("proj-prev");
+    const projNext    = document.getElementById("proj-next");
+    const projCounter = document.getElementById("proj-current");
+    const projDots    = document.querySelectorAll(".cdot");
+    const projCards   = projTrack ? projTrack.querySelectorAll(".proj-c-card") : [];
+    let projIndex = 0;
+
+    function getCardStep() {
+        if (!projCards.length) return 0;
+        const card = projCards[0];
+        const gap = 20;
+        return card.offsetWidth + gap;
+    }
+
+    function updateCarousel() {
+        if (!projTrack) return;
+        const step = getCardStep();
+        projTrack.style.transform = `translateX(-${projIndex * step}px)`;
+        if (projCounter) projCounter.textContent = String(projIndex + 1).padStart(2, "0");
+        projDots.forEach((d, i) => d.classList.toggle("active", i === projIndex));
+        if (projPrev) projPrev.disabled = projIndex === 0;
+        if (projNext) projNext.disabled = projIndex === projCards.length - 1;
+    }
+
+    if (projPrev && projNext && projCards.length) {
+        projPrev.addEventListener("click", () => {
+            if (projIndex > 0) { projIndex--; updateCarousel(); }
+        });
+        projNext.addEventListener("click", () => {
+            if (projIndex < projCards.length - 1) { projIndex++; updateCarousel(); }
+        });
+        projDots.forEach(dot => {
+            dot.addEventListener("click", () => {
+                projIndex = parseInt(dot.dataset.index);
+                updateCarousel();
+            });
+        });
+        updateCarousel();
+    }
+    // ────────────────────────────────────────────────────────────────
+
     // 3. Scroll Spy for Sidebar Dot Highlights
+
     const sections = document.querySelectorAll(".scroll-section");
     const sidebarDots = document.querySelectorAll(".sidebar-dot");
 
@@ -200,6 +244,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const targetId = link.getAttribute("href").substring(1);
             const targetIndex = sectionsArray.findIndex(s => s.getAttribute("id") === targetId);
             if (targetIndex !== -1) {
+                scrollToSection(targetIndex);
+            }
+        });
+    });
+
+    // Attach click events on all other internal hash links (e.g. Contact Me button)
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+        // Skip if it's already handled by sidebar dots or menu links
+        if (link.classList.contains('sidebar-dot') || link.classList.contains('menu-link')) return;
+
+        link.addEventListener("click", (e) => {
+            const targetId = link.getAttribute("href").substring(1);
+            if (!targetId) return;
+            const targetIndex = sectionsArray.findIndex(s => s.getAttribute("id") === targetId);
+            if (targetIndex !== -1) {
+                e.preventDefault();
                 scrollToSection(targetIndex);
             }
         });

@@ -911,138 +911,305 @@ body {
     transform: scale(1.03);
 }
 
-/* Project Lists */
-.projects-list {
+/* ================================================
+   PROJECT CAROUSEL — Horizontal Sliding Cards
+   ================================================ */
+
+/* ─── Projects Section: Stacked Layout ─── */
+.projects-section .section-container {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    padding-top: 70px;
+    padding-bottom: 20px;
+    gap: 24px;
+}
+
+/* Top row: Text on left, Controls on right */
+.proj-top-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.proj-text-block {
+    flex: 1;
+}
+
+.proj-controls-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    padding-bottom: 4px;
+}
+
+/* Carousel outer stretches remaining height */
+.proj-carousel-outer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+}
+
+/* The clipping viewport — fills the outer */
+.proj-carousel-viewport {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    /* Clip the cards to fix corner edges */
+    border-radius: 24px;
+}
+
+/* Horizontal flex row of cards */
+.proj-carousel-track {
+    display: flex;
+    gap: 20px;
+    align-items: stretch; /* Cards stretch to match tallest card */
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform;
+}
+
+/* === Individual Card === */
+.proj-c-card {
+    min-width: calc(100% - 80px); /* show slight peek of next card */
+    flex-shrink: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 28px 28px 24px;
     display: flex;
     flex-direction: column;
     gap: 14px;
-    width: 100%;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    /* Ensure sub-pixel rendering doesn't break rounded corners */
+    transform: translateZ(0);
 }
 
-.project-item {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 20px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    transition: var(--transition-smooth);
-}
-
-.project-item:hover {
+.proj-c-card:hover {
     border-color: var(--border-focus);
-    transform: translateX(4px);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.06);
 }
 
-.proj-left {
+/* Top row: number badge + emoji */
+.proj-c-top {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.proj-c-num {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    background: rgba(55,65,81,0.06);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+}
+
+.proj-c-emoji {
+    font-size: 36px;
+    line-height: 1;
+}
+
+/* Project name */
+.proj-c-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.25;
+    letter-spacing: -0.4px;
+}
+
+/* Tag pills */
+.proj-c-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.proj-c-tag {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: rgba(55,65,81,0.06);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Description — grows to fill remaining space */
+.proj-c-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    flex: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+}
+
+/* Footer row */
+.proj-c-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+}
+
+.proj-c-metric {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.proj-c-metric i, .proj-c-metric svg {
+    width: 13px;
+    height: 13px;
+}
+
+.proj-c-tech {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* GitHub button */
+.proj-c-btn {
+    display: inline-flex;
+    align-items: center;
     gap: 8px;
-    align-items: center;
-}
-
-.proj-icon {
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-main);
     background: #F9FAFB;
     border: 1px solid var(--border);
     border-radius: 12px;
+    padding: 9px 16px;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    align-self: flex-start;
 }
 
-.proj-meta {
+.proj-c-btn:hover {
+    background: var(--text-main);
+    color: var(--bg-page);
+    border-color: var(--text-main);
+}
+
+/* === Left-panel Carousel Controls === */
+.carousel-counter {
     display: flex;
+    align-items: baseline;
     gap: 4px;
-    flex-direction: column;
+    margin-top: 28px;
 }
 
-.proj-tag {
-    font-size: 9px;
-    font-weight: 700;
-    background: #F3F4F6;
-    border: 1px solid var(--border);
-    padding: 2px 6px;
-    border-radius: 6px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    text-align: center;
-}
-
-.proj-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.proj-name {
-    font-size: 18px;
-    font-weight: 700;
+.carousel-current {
+    font-family: 'Outfit', sans-serif;
+    font-size: 52px;
+    font-weight: 900;
     color: var(--text-main);
+    line-height: 1;
+    letter-spacing: -2px;
+    transition: all 0.3s ease;
 }
 
-.proj-desc {
-    font-size: 13px;
+.carousel-sep {
+    font-size: 16px;
     color: var(--text-muted);
-    line-height: 1.5;
+    font-weight: 300;
 }
 
-.proj-footer {
+.carousel-total {
+    font-size: 16px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/* Dot indicators */
+.carousel-dots {
     display: flex;
+    gap: 8px;
+    margin-top: 18px;
     align-items: center;
-    gap: 16px;
-    margin-top: 6px;
 }
 
-.proj-metric {
-    font-size: 11px;
-    font-weight: 700;
+.cdot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(55,65,81,0.25);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.cdot.active {
+    width: 28px;
+    border-radius: 20px;
+    background: var(--text-main);
+}
+
+/* Arrow buttons */
+.carousel-arrows {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.carousel-arrow {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--bg-card);
     color: var(--text-main);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.proj-metric i, .proj-metric svg {
-    width: 12px;
-    height: 12px;
-}
-
-.proj-tech {
-    font-size: 11px;
-    color: var(--text-muted);
-}
-
-.proj-right-btn a {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #F9FAFB;
-    border: 1px solid var(--border);
-    color: var(--text-main);
-    text-decoration: none;
+    cursor: pointer;
     transition: var(--transition-smooth);
+    flex-shrink: 0;
 }
 
-.proj-right-btn a:hover {
-    background-color: var(--accent);
-    color: var(--text-white);
-    border-color: var(--accent);
+.carousel-arrow:hover:not(:disabled) {
+    background: var(--text-main);
+    border-color: var(--text-main);
+    color: var(--bg-page);
 }
 
-.proj-right-btn a i, .proj-right-btn a svg {
-    width: 16px;
-    height: 16px;
+.carousel-arrow:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
 }
+
 
 /* Certifications lists */
+
+
 .certifications-list {
     display: flex;
     flex-direction: column;
@@ -1261,10 +1428,20 @@ body {
         padding: 80px 0;
         height: auto;
     }
-    
+
     .grid-layout, .flex-split {
         grid-template-columns: 1fr;
         gap: 40px;
+    }
+
+    /* Projects stacked layout on mobile/tablet */
+    .proj-top-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    .proj-controls-block {
+        align-items: flex-start;
     }
     
     .hero-right {
