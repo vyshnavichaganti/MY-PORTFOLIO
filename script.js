@@ -426,4 +426,38 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 5000);
         });
     }
+
+    // 6. Certificate Viewer Modal
+    const certModal = document.getElementById("cert-modal");
+    const certModalImg = document.getElementById("cert-modal-img");
+    const certModalClose = document.getElementById("cert-modal-close");
+    const viewCertBtns = document.querySelectorAll(".view-cert-btn");
+
+    if (certModal && certModalImg && certModalClose) {
+        viewCertBtns.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                const imgSrc = btn.getAttribute("data-cert-img");
+                if (imgSrc) {
+                    certModalImg.src = imgSrc;
+                    certModal.classList.add("show");
+                }
+            });
+        });
+
+        // Close on X click
+        certModalClose.addEventListener("click", () => {
+            certModal.classList.remove("show");
+            setTimeout(() => certModalImg.src = "", 300); // Clear source after animation
+        });
+
+        // Close on clicking outside the image
+        certModal.addEventListener("click", (e) => {
+            if (e.target === certModal) {
+                certModal.classList.remove("show");
+                setTimeout(() => certModalImg.src = "", 300);
+            }
+        });
+    }
 });
+
