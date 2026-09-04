@@ -52,21 +52,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const projCards   = projTrack ? projTrack.querySelectorAll(".proj-c-card") : [];
     let projIndex = 0;
 
-    function getCardStep() {
-        if (!projCards.length) return 0;
-        const card = projCards[0];
-        const gap = 20;
-        return card.offsetWidth + gap;
-    }
-
     function updateCarousel() {
-        if (!projTrack) return;
-        const step = getCardStep();
-        projTrack.style.transform = `translateX(-${projIndex * step}px)`;
+        if (!projTrack || !projCards.length) return;
+        const targetCard = projCards[projIndex];
+        if (targetCard) {
+            projTrack.style.transform = `translateX(-${targetCard.offsetLeft}px)`;
+        }
         if (projCounter) projCounter.textContent = String(projIndex + 1).padStart(2, "0");
         projDots.forEach((d, i) => d.classList.toggle("active", i === projIndex));
         if (projPrev) projPrev.disabled = projIndex === 0;
         if (projNext) projNext.disabled = projIndex === projCards.length - 1;
+        const projTotalEl = document.querySelector(".carousel-total");
+        if (projTotalEl && projCards.length) {
+            projTotalEl.textContent = String(projCards.length).padStart(2, "0");
+        }
     }
 
     if (projPrev && projNext && projCards.length) {
@@ -82,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 updateCarousel();
             });
         });
+        window.addEventListener("resize", updateCarousel);
         updateCarousel();
     }
     // ────────────────────────────────────────────────────────────────
@@ -148,6 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Clean up exit class from leaving section after animation
             setTimeout(() => {
                 if (leavingSection) clearTransitionClasses(leavingSection);
+                if (activeId === "projects") updateCarousel();
             }, 900);
         } else {
             // Scroll smoothly on mobile devices

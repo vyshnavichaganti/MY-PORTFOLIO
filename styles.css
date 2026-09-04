@@ -973,12 +973,14 @@ body {
     align-items: stretch; /* Cards stretch to match tallest card */
     transition: transform 0.65s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: transform;
+    width: 100%;
 }
 
 /* === Individual Card === */
 .proj-c-card {
-    min-width: calc(100% - 80px); /* show slight peek of next card */
-    flex-shrink: 0;
+    flex: 0 0 calc(100% - 80px);
+    width: calc(100% - 80px);
+    max-width: calc(100% - 80px);
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 24px;
@@ -1443,6 +1445,11 @@ body {
     .proj-controls-block {
         align-items: flex-start;
     }
+    .proj-c-card {
+        flex: 0 0 calc(100% - 40px);
+        width: calc(100% - 40px);
+        max-width: calc(100% - 40px);
+    }
     
     .hero-right {
         order: -1;
@@ -1483,6 +1490,13 @@ body {
     
     .form-row {
         grid-template-columns: 1fr;
+    }
+    
+    .proj-c-card {
+        flex: 0 0 calc(100% - 20px);
+        width: calc(100% - 20px);
+        max-width: calc(100% - 20px);
+        padding: 22px 18px;
     }
     
     .footer {
