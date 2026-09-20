@@ -100,10 +100,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Transition style definitions: each index = from-section, value = unique class suffix
     // Transitions are named: "tx-{from}-{to}" e.g. tx-0-1 = Home → About
     const TRANSITION_CLASSES = [
-        'tx-exit-0', 'tx-exit-1', 'tx-exit-2', 'tx-exit-3', 'tx-exit-4', 'tx-exit-5'
+        'tx-exit-0', 'tx-exit-1', 'tx-exit-2', 'tx-exit-3', 'tx-exit-4', 'tx-exit-5', 'tx-exit-6'
     ];
     const ENTRY_CLASSES = [
-        'tx-enter-0', 'tx-enter-1', 'tx-enter-2', 'tx-enter-3', 'tx-enter-4', 'tx-enter-5'
+        'tx-enter-0', 'tx-enter-1', 'tx-enter-2', 'tx-enter-3', 'tx-enter-4', 'tx-enter-5', 'tx-enter-6'
     ];
 
     function clearTransitionClasses(section) {
