@@ -914,7 +914,7 @@ body {
     font-weight: 500;
 }
 
-.exp-company i, .exp-period i {
+.exp-company i, .exp-company svg, .exp-period i, .exp-period svg {
     width: 15px;
     height: 15px;
     color: var(--accent);
@@ -960,10 +960,11 @@ body {
     transform: translateY(-2px);
 }
 
-.exp-tag i {
+.exp-tag i, .exp-tag svg {
     width: 13px;
     height: 13px;
     color: var(--accent);
+    flex-shrink: 0;
 }
 
 /* Experience Cards Grid (Right side) */
@@ -1010,7 +1011,7 @@ body {
     color: var(--accent);
 }
 
-.exp-feat-icon i {
+.exp-feat-icon i, .exp-feat-icon svg {
     width: 18px;
     height: 18px;
 }
@@ -2027,7 +2028,7 @@ body {
     color: var(--accent);
 }
 
-.ach-icon i {
+.ach-icon i, .ach-icon svg {
     width: 22px;
     height: 22px;
 }
