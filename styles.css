@@ -124,11 +124,11 @@ body {
 
     /* Section tag base — hidden until active */
     .hero-left .section-tag,
+    .hero-left .hero-header-row,
     .split-left .section-tag {
         opacity: 0;
         transform: scale(1.1) translateY(-20px);
         filter: blur(8px);
-        display: block;
         transition: opacity 0.7s ease 0.05s, transform 0.7s ease 0.05s, filter 0.7s ease 0.05s;
     }
 
@@ -179,6 +179,7 @@ body {
 
     /* ---- ACTIVE STATES (section enters view — CSS transition resolves) ---- */
     .scroll-section.active .hero-left .section-tag,
+    .scroll-section.active .hero-left .hero-header-row,
     .scroll-section.active .split-left .section-tag {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -222,6 +223,7 @@ body {
 
     /* ---- ENTER: zoom-in from large blur, collapse to crisp (arriving section) ---- */
     .scroll-section.tx-enter-0.active .hero-left .section-tag,
+    .scroll-section.tx-enter-0.active .hero-left .hero-header-row,
     .scroll-section.tx-enter-0.active .hero-title,
     .scroll-section.tx-enter-0.active .hero-desc,
     .scroll-section.tx-enter-0.active .hero-ctas,
@@ -630,6 +632,85 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.hero-header-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
+.hero-header-row .section-tag {
+    margin-bottom: 0;
+    display: inline-block;
+}
+
+.hero-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 14px;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.28);
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #047857;
+    letter-spacing: 0.2px;
+    line-height: 1;
+    backdrop-filter: blur(8px);
+    transition: var(--transition-smooth);
+    user-select: none;
+    cursor: default;
+    box-shadow: 0 1px 3px rgba(16, 185, 129, 0.08);
+}
+
+.hero-status-badge:hover {
+    background: rgba(16, 185, 129, 0.14);
+    border-color: rgba(16, 185, 129, 0.45);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.16);
+}
+
+.status-dot-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 8px;
+    height: 8px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #10B981;
+}
+
+.status-ping {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #10B981;
+    opacity: 0.8;
+    animation: statusPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes statusPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.85;
+    }
+    70%, 100% {
+        transform: scale(2.6);
+        opacity: 0;
+    }
 }
 
 .hero-title {
@@ -1482,6 +1563,16 @@ body {
 }
 
 @media (max-width: 767px) {
+    .hero-header-row {
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    .hero-status-badge {
+        font-size: 12px;
+        padding: 5px 12px;
+    }
+
     .hero-title {
         font-size: 48px;
     }
